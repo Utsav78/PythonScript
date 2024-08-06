@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from collections import Counter
 
+
 # Function to scrape LinkedIn job postings and extract skills
 def scrape_linkedin_jobs(keyword, num_pages):
     job_skills = []
@@ -20,14 +21,13 @@ def scrape_linkedin_jobs(keyword, num_pages):
     # Start a Selenium WebDriver with options
     driver = webdriver.Chrome(options=options)
 
-
     url = f'https://www.linkedin.com/jobs/search/?keywords={keyword}'
     driver.get(url)
     j = 0
     # Scroll to load more jobs (you may need to adjust the number of scrolls)
     for _ in range(num_pages):
-        print("scroll ######",j)
-        j = j+1
+        print("scroll ######", j)
+        j = j + 1
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
         time.sleep(2)  # Wait for content to load
 
@@ -37,13 +37,12 @@ def scrape_linkedin_jobs(keyword, num_pages):
     for card in job_cards:
         try:
 
-            job_title_element = WebDriverWait(card, 10)\
-            .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.base-search-card__title')))
-            company_element = WebDriverWait(card, 10)\
-            .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.base-search-card__subtitle')))
-            description = WebDriverWait(card, 10)\
-            .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.base-card__full-link')))
-
+            job_title_element = WebDriverWait(card, 10) \
+                .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.base-search-card__title')))
+            company_element = WebDriverWait(card, 10) \
+                .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.base-search-card__subtitle')))
+            description = WebDriverWait(card, 10) \
+                .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.base-card__full-link')))
 
             company_name = company_element.text
             job_title = job_title_element.text
@@ -88,10 +87,11 @@ def extract_job_description(driver):
     except TimeoutException:
         return "Job description not found or couldn't be loaded"
 
+
 # Function to expand job description by clicking "show more" if available
 def expand_description(driver):
     try:
-        show_more_button = WebDriverWait(card, 10)\
+        show_more_button = WebDriverWait(card, 10) \
             .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.show-more-less-html__button')))
 
         show_more_button.click()
@@ -103,19 +103,20 @@ def expand_description(driver):
 # Function to extract skills from a job title
 def extract_skills(description):
     # This is a basic example, you can extend this to match more skills
-    skills = ['PostgreSQL','Snowflake','Databricks','Redshift','BigQuery','MongoDB','MySQL',
-              'Kafka','Kinesis','PubSub','Pub/sub','event hub','Airflow','dbt','NiFi', 'Fivetran',
-            'Collibra','Denodo','presto','Starburst','Immuta','PowerBI','Tableau','Looker',
-             'Matillion','Alteryx','Informatica','Talend','EMR','Dataproc','Synapse']
+    skills = ['PostgreSQL', 'Snowflake', 'Databricks', 'Redshift', 'BigQuery', 'MongoDB', 'MySQL',
+              'Kafka', 'Kinesis', 'PubSub', 'Pub/sub', 'event hub', 'Airflow', 'dbt', 'NiFi', 'Fivetran',
+              'Collibra', 'Denodo', 'presto', 'Starburst', 'Immuta', 'PowerBI', 'Tableau', 'Looker',
+              'Matillion', 'Alteryx', 'Informatica', 'Talend', 'EMR', 'Dataproc', 'Synapse']
     description = description.lower()
     skills_list = [skill for skill in skills if skill.lower() in description]
     print(skills_list)
     return skills_list
 
+
 # Main function
 if __name__ == "__main__":
     keyword = "data%20engineer"
-    num_pages = 20 # You can adjust the number of pages to scrape
+    num_pages = 20  # You can adjust the number of pages to scrape
 
     job_skills = scrape_linkedin_jobs(keyword, num_pages)
 
