@@ -31,7 +31,7 @@ def scrape_linkedin_jobs(keyword, num_pages):
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
         time.sleep(2)  # Wait for content to load
 
-    # Extract job titles and skills (modify as needed)
+    # Extract job titles and skills
     job_cards = driver.find_elements(By.CSS_SELECTOR, '.base-card')
     break_element = 0
     for card in job_cards:
@@ -88,13 +88,11 @@ def extract_job_description(driver):
         return "Job description not found or couldn't be loaded"
 
 
-# Function to expand job description by clicking "show more" if available
+# Function to expand the job description by clicking "show more" if available
 def expand_description(driver):
     try:
-        show_more_button = WebDriverWait(card, 10) \
-            .until(EC.presence_of_element_located((By.CSS_SELECTOR, '.show-more-less-html__button')))
-
-        show_more_button.click()
+        show_more_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.show-more-less-html__button')))
+        driver.execute_script("arguments[0].click();", show_more_button)
         time.sleep(2)  # Wait for the description to expand
     except Exception as e:
         pass  # No "show more" button found or error occurred
